@@ -10,16 +10,20 @@ import dashboardRoutes from './routes/dashboard.routes';
 
 dotenv.config();
 
-const FRONTEND_URL = process.env.FRONTEND_URL;
+const rawFrontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.trim().replace(/\/+$/, '') : '';
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
+
+const allowedOrigins = rawFrontendUrl
+  ? [rawFrontendUrl, 'http://localhost:3000', 'http://localhost:5173']
+  : true;
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: FRONTEND_URL,
-    credentials: true
-  }
+    origin: allowedOrigins,
+    credentials: true,
+  },
 });
 
 // Initialize WebSocket service
@@ -27,8 +31,8 @@ WebSocketService.initialize(io);
 
 // Middleware
 app.use(cors({
-  origin: FRONTEND_URL,
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
