@@ -21,7 +21,8 @@ npm install
 
 ### 2. Create PostgreSQL Database
 ```bash
-createdb support_system
+createdb support_system  or sudo -u postgres createdb support_system
+
 ```
 *Or via psql:*
 ```sql
